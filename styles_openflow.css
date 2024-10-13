@@ -9,7 +9,12 @@ header {
     background-color: #333;
     color: white;
     padding: 20px;
-    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    transition: top 0.3s;
 }
 
 nav ul {
@@ -43,4 +48,8 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+main {
+    padding-top: 80px;
 }
