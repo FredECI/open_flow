@@ -6,11 +6,9 @@ window.addEventListener("scroll", () => {
 
     if (scrollTop > lastScrollTop && scrollTop > 100) {
         // Rolando para baixo e passou de 100px: esconde o header
-        console.log("Scroll Detected: ", window.pageYOffset);
         header.style.top = "-120px";
     } else {
         // Rolando para cima: mostra o header
-        console.log("Scroll Detected: ", window.pageYOffset);
         header.style.top = "0";
     }
 
