@@ -102,19 +102,81 @@
                 previamente configuradas.
             </p>
         
-            <h3>3.2. Tabelas de Fluxo</h3>
-            <p>
-                As tabelas de fluxo são estruturas de dados presentes nos switches, onde cada entrada contém informações como
-                cabeçalho do pacote, contador de pacotes e ações a serem realizadas. Com base nessas regras, o switch 
-                decide se encaminha o pacote para outro ponto da rede ou se descarta a mensagem.
-            </p>
-        
-            <h3>3.3. Fluxo de Dados</h3>
+            <h3>3.2. Fluxo de Dados</h3>
             <p>
                 O fluxo de dados no OpenFlow é orientado por políticas definidas no controlador. Quando um pacote chega ao
                 switch e não corresponde a nenhuma entrada na tabela de fluxo, o pacote é enviado para o controlador, que 
                 decide como tratá-lo. Isso garante uma gestão eficiente e controlada do tráfego, permitindo a adaptação 
                 dinâmica às condições da rede.
+            </p>
+
+            <h3>3.3. Tabela de Fluxo</h3>
+            <p>
+                A tabela de fluxo é um componente central na operação do OpenFlow, responsável por armazenar as regras 
+                e instruções de manipulação de pacotes que o switch deve seguir. Cada entrada na tabela de fluxo inclui 
+                três elementos principais:
+            </p>
+
+            <h4>Header</h4>
+            <p>
+                O cabeçalho (header) de cada entrada define os critérios de correspondência (matching) para o fluxo de 
+                pacotes. Ele inclui campos como o endereço IP de origem e destino, portas de origem e destino, tipo de 
+                protocolo, entre outros. Esses critérios são usados para identificar e classificar os pacotes que passam 
+                pelo switch, permitindo que ações específicas sejam aplicadas a eles.
+            </p>
+
+            <h4>Ações</h4>
+            <p>
+                As ações especificam o que o switch deve fazer com os pacotes correspondentes a um determinado fluxo. 
+                As ações mais comuns incluem encaminhar o pacote para uma porta específica, descartar o pacote ou 
+                modificar certos campos do cabeçalho antes de encaminhá-lo. As ações podem ser combinadas em grupos, 
+                permitindo maior flexibilidade na manipulação dos pacotes de acordo com as políticas definidas pelo 
+                controlador.
+            </p>
+
+            <h4>Contadores</h4>
+            <p>
+                Os contadores são usados para monitorar o tráfego associado a cada fluxo. Eles registram informações 
+                como o número de pacotes e bytes que passaram pelo switch para aquele fluxo específico, permitindo que 
+                o controlador monitore a rede em tempo real. Com base nesses contadores, o controlador pode identificar 
+                padrões de tráfego, detectar anomalias e ajustar as regras de fluxo conforme necessário para otimizar o 
+                desempenho da rede.
+            </p>
+
+            <h3>3.4. Mensagens</h3>
+            <p>
+                As mensagens são a principal forma de comunicação entre o controlador e os switches OpenFlow. Elas 
+                permitem que o controlador envie comandos e receba informações sobre o estado da rede. Existem três 
+                tipos principais de mensagens: <strong>simétricas</strong>, <strong>assíncronas</strong> e 
+                <strong>controller-to-switch</strong>.
+            </p>
+        
+            <h4>Mensagens Simétricas</h4>
+            <p>
+                As mensagens simétricas são trocadas entre o controlador e os switches sem que uma solicitação específica 
+                seja feita. Um exemplo comum é a mensagem de "Hello", que é usada para estabelecer a comunicação inicial 
+                entre o controlador e o switch. Esse tipo de mensagem é essencial para garantir que o canal de 
+                comunicação esteja ativo e que o controlador e o switch possam trocar informações de forma contínua.
+            </p>
+        
+            <h4>Mensagens Assíncronas</h4>
+            <p>
+                As mensagens assíncronas são enviadas pelos switches ao controlador, geralmente para notificar eventos 
+                importantes na rede. Esses eventos incluem a chegada de um novo fluxo que não possui uma regra na tabela 
+                de fluxo (evento "Packet-In"), a remoção de um fluxo (evento "Flow-Removed"), ou mudanças no estado da 
+                porta do switch (evento "Port-Status"). Essas mensagens permitem que o controlador responda a eventos 
+                em tempo real, ajustando as regras de fluxo e as políticas de rede de acordo com as mudanças no ambiente.
+            </p>
+        
+            <h4>Mensagens Controller-to-Switch</h4>
+            <p>
+                As mensagens do tipo "controller-to-switch" são enviadas diretamente pelo controlador ao switch, 
+                solicitando ou alterando o estado de uma tabela de fluxo ou de uma porta específica. Por exemplo, o 
+                controlador pode usar uma mensagem "Flow-Mod" para adicionar, modificar ou remover uma entrada na tabela 
+                de fluxo do switch. Outro exemplo é a mensagem "Packet-Out", que permite ao controlador instruir o switch 
+                a encaminhar um pacote específico por uma porta de saída. Essas mensagens são fundamentais para o 
+                funcionamento do OpenFlow, pois permitem que o controlador tenha controle direto sobre o comportamento 
+                dos switches na rede.
             </p>
         </section>
     
@@ -126,15 +188,97 @@
                 Os switches OpenFlow são projetados para executar regras precisas definidas pelo controlador SDN.
                 Cada switch contém uma ou mais tabelas de fluxo, onde estão armazenadas as instruções para manipulação
                 de pacotes. A especificação do switch define como essas tabelas devem ser organizadas, como os pacotes
-                são correspondidos e como as ações são aplicadas.
+                são correspondidos e como as ações são aplicadas, de acordo com o controle centralizado fornecido pelo controlador.
             </p>
             <p>
-                O OpenFlow suporta múltiplas versões, cada uma introduzindo novos recursos. Por exemplo, a versão 1.0
-                trouxe a estrutura básica com uma única tabela de fluxo, enquanto a versão 1.5.1 introduziu múltiplas
-                tabelas e suporte a grupos de ações. Essas versões refletem a evolução das necessidades das redes
-                modernas, permitindo maior controle e eficiência no encaminhamento de pacotes.
+                Os switches operam em conjunto com o controlador, mas de forma a minimizar o tráfego de controle: uma vez que uma 
+                regra de fluxo é aplicada, os switches podem processar pacotes de maneira independente, sem precisar encaminhar 
+                cada pacote ao controlador. Essa abordagem permite uma operação eficiente e escalável, onde o controlador apenas 
+                intervém quando novas regras precisam ser aplicadas ou atualizadas.
+            </p>
+        
+            <h4>Componentes das Especificações do Switch</h4>
+            <p>
+                As especificações do switch OpenFlow incluem três componentes principais:
+            </p>
+        
+            <ul>
+                <li><strong>Tabela de Fluxo:</strong> Onde estão as regras de encaminhamento e manipulação dos pacotes. Cada 
+                entrada da tabela de fluxo possui critérios de correspondência, ações a serem tomadas e contadores para monitoramento.</li>
+                <li><strong>Canais de Comunicação:</strong> O switch OpenFlow usa canais de comunicação seguros para receber instruções 
+                do controlador e enviar informações de estado. Esses canais garantem a integridade dos comandos de rede e a confidencialidade 
+                dos dados transmitidos.</li>
+                <li><strong>Portas de Entrada e Saída:</strong> As portas do switch são os pontos de entrada e saída de pacotes, 
+                essenciais para o direcionamento e roteamento do tráfego conforme as instruções do controlador.</li>
+            </ul>
+        
+            <h3>4.2. Versões do OpenFlow e Suas Funcionalidades</h3>
+            <p>
+                O OpenFlow passou por diversas atualizações, cada versão introduzindo recursos e capacidades para responder 
+                às novas demandas das redes. Essas versões incluem melhorias na escalabilidade, flexibilidade de controle e 
+                capacidades de roteamento de pacotes. Abaixo estão algumas das principais versões e suas contribuições:
+            </p>
+        
+            <h4>OpenFlow 1.0</h4>
+            <p>
+                A primeira versão formal do OpenFlow foi lançada em 2008. A versão 1.0 introduziu a arquitetura de controle centralizado, 
+                com uma única tabela de fluxo por switch. Ela permitia que o controlador definisse diretamente as regras de encaminhamento 
+                para cada fluxo, proporcionando uma base para as Redes Definidas por Software (SDN). No entanto, as funcionalidades eram 
+                básicas, com capacidade limitada de ações e critérios de correspondência.
+            </p>
+        
+            <h4>OpenFlow 1.1</h4>
+            <p>
+                A versão 1.1 trouxe a introdução de múltiplas tabelas de fluxo e grupos de ações, permitindo que um switch executasse 
+                várias operações em sequência para um mesmo pacote. Isso aumentou a flexibilidade e permitiu uma maior eficiência no 
+                processamento de pacotes, além de simplificar o gerenciamento de tráfego mais complexo.
+            </p>
+        
+            <h4>OpenFlow 1.3</h4>
+            <p>
+                Esta versão ampliou as capacidades de correspondência de campos, permitindo regras de fluxo mais detalhadas e ações avançadas. 
+                Também introduziu a possibilidade de medição de qualidade de serviço (QoS), facilitando o controle de largura de banda e 
+                priorização de tráfego. OpenFlow 1.3 foi uma versão amplamente adotada, pois ofereceu maior flexibilidade para aplicações 
+                de controle de tráfego.
+            </p>
+        
+            <h4>OpenFlow 1.5.1</h4>
+            <p>
+                A versão 1.5.1 introduziu melhorias significativas em relação ao controle de grupos e múltiplas tabelas, além de recursos 
+                adicionais para operações assíncronas. Uma das funcionalidades de destaque foi o suporte a tabelas de metadados, que permitiram 
+                uma manipulação mais sofisticada dos pacotes e possibilitaram um controle mais dinâmico das políticas de rede.
+            </p>
+        
+            <h3>4.3. Capacidade de Correspondência e Manipulação de Pacotes</h3>
+            <p>
+                O OpenFlow permite a correspondência de pacotes com base em uma variedade de campos, incluindo endereços de IP, portas 
+                de origem e destino, e identificadores de protocolo. Essas capacidades de correspondência podem ser configuradas de 
+                forma precisa para identificar fluxos específicos de dados. Ao combinar diferentes critérios, o OpenFlow possibilita 
+                uma segmentação de tráfego detalhada, fundamental para garantir que políticas de segurança, controle de acesso e qualidade 
+                de serviço sejam aplicadas conforme necessário.
+            </p>
+            <p>
+                A manipulação dos pacotes, por sua vez, inclui ações como encaminhar o pacote a uma porta específica, modificar seu 
+                cabeçalho (como reescrever o endereço de origem ou destino), aplicar etiquetas (tags) para identificar o tipo de 
+                tráfego ou descartar o pacote. Esses recursos tornam o OpenFlow extremamente versátil, permitindo implementar desde 
+                políticas simples de roteamento até configurações avançadas de redes corporativas e data centers.
+            </p>
+        
+            <h3>4.4. Resiliência e Monitoramento</h3>
+            <p>
+                A especificação do OpenFlow também considera a resiliência da rede. Em caso de falhas no controlador ou em 
+                comunicações entre o controlador e os switches, as tabelas de fluxo armazenadas localmente permitem que o switch 
+                continue a operar com as regras existentes até que a comunicação seja restabelecida. Essa capacidade de operação 
+                independente é essencial para garantir a continuidade dos serviços em redes críticas.
+            </p>
+            <p>
+                O OpenFlow também inclui recursos robustos de monitoramento, como o uso de contadores e métricas de tráfego para 
+                cada entrada na tabela de fluxo. Esses contadores registram informações como o número de pacotes e bytes processados, 
+                além do tempo em que cada fluxo foi ativo. O controlador pode consultar esses dados periodicamente para avaliar a 
+                performance e identificar padrões de tráfego, otimizando o funcionamento da rede.
             </p>
         </section>
+        
         
         <section id="controladores">
             <h2>5. Controladores OpenFlow</h2>
@@ -219,7 +363,7 @@
             <h3>7.2. Desafios da Implementação</h3>
             <p>
                 Implementar uma rede baseada em OpenFlow apresenta desafios, especialmente quando a rede deve coexistir com 
-                infraestruturas legadas. Em empresas com redes já estabelecidas, uma transição completa para uma rede SDN pode 
+                infraestruturas legado. Em empresas com redes já estabelecidas, uma transição completa para uma rede SDN pode 
                 ser impraticável e arriscada. Portanto, é comum que a migração ocorra gradualmente, com a introdução de novos 
                 elementos OpenFlow coexistindo com os sistemas antigos.
             </p>
