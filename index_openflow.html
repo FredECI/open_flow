@@ -27,7 +27,7 @@
     
     <main>
         <section id="introducao">
-            <img src="images/openflow_banner.png" alt="Ilustração de Rede" class="section-image">
+            <img src="images/openflow_banner.png" alt="OpenFlow Banner" class="section-image">
             <h2>1. Introdução</h2>
         
             <h3>1.1. Motivação</h3>
@@ -77,13 +77,14 @@
             </p>
         </section>
     
-        <section id="arquitetura">
+        <section id="arquitetura", class="section-with-image">
             <h2>3. Arquitetura do OpenFlow</h2>
-        
+            
             <h3>3.1. Componentes do OpenFlow</h3>
             
             <h4>3.1.1. Controlador SDN</h4>
             <p>
+                <img src="images/diagrama_openflow.png" alt="Diagrama OpenFlow" class="arquitetura-image">
                 O controlador SDN é o cérebro da rede, responsável por enviar as regras de encaminhamento para os switches.
                 Ele opera como uma camada de software que permite a programação e gestão centralizada dos fluxos de rede.
             </p>
@@ -171,12 +172,21 @@
             <h4>Mensagens Controller-to-Switch</h4>
             <p>
                 As mensagens do tipo "controller-to-switch" são enviadas diretamente pelo controlador ao switch, 
-                solicitando ou alterando o estado de uma tabela de fluxo ou de uma porta específica. Por exemplo, o 
-                controlador pode usar uma mensagem "Flow-Mod" para adicionar, modificar ou remover uma entrada na tabela 
-                de fluxo do switch. Outro exemplo é a mensagem "Packet-Out", que permite ao controlador instruir o switch 
-                a encaminhar um pacote específico por uma porta de saída. Essas mensagens são fundamentais para o 
-                funcionamento do OpenFlow, pois permitem que o controlador tenha controle direto sobre o comportamento 
-                dos switches na rede.
+                solicitando ou alterando o estado de uma tabela de fluxo ou de uma porta específica. Dessa forma, 
+                temos, principalmente, as mensagens que alteram uma configuração ou são alguma feature.
+            </p>
+            
+            <p>
+                Por exemplo, o controlador pode usar uma mensagem "Flow-Mod" para adicionar, modificar ou remover 
+                uma entrada na tabela de fluxo do switch. Outro exemplo é a mensagem "Packet-Out", que permite ao 
+                controlador instruir o switch a encaminhar um pacote específico por uma porta de saída.
+            </p>
+            
+            <p>
+                Por fim, podemos pensar no exemplo de mensagens que configuram o estado das tabelas de fluxo, 
+                as quais podem ser numeradas de 0 até n. Essas mensagens são fundamentais para o funcionamento 
+                do OpenFlow, pois permitem que o controlador tenha controle direto sobre o comportamento dos 
+                switches na rede.
             </p>
         </section>
     
