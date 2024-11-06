@@ -5,13 +5,27 @@ window.addEventListener("scroll", () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
     if (scrollTop > lastScrollTop && scrollTop > 100) {
-        // Rolando para baixo e passou de 100px: esconde o header
         header.style.top = "-100px";
     } else {
-        // Rolando para cima: mostra o header
         header.style.top = "0";
     }
-
-    // Atualiza a última posição de rolagem
     lastScrollTop = scrollTop;
+});
+
+document.querySelectorAll("header nav a").forEach(link => {
+    link.addEventListener("click", function(event) {
+        event.preventDefault();
+
+        const targetId = this.getAttribute("href").substring(1);
+        const targetElement = document.getElementById(targetId);
+
+        const headerOffset = 180;
+        const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+        const offsetPosition = elementPosition - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+        });
+    });
 });
